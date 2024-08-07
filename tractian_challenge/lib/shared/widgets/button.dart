@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:tractian_challenge/shared/app_theme.dart';
 
 class Button extends StatefulWidget {
   final String label;
   final void Function() onPressed;
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
+  final TextStyle labelStyle;
+  final Icon icon;
+  final Color backGroundColor;
+  final Color? borderColor;
 
   const Button({
     super.key,
     required this.label,
     required this.onPressed,
-    required this.width,
-    required this.height,
+    this.width,
+    this.height,
+    required this.labelStyle,
+    required this.icon,
+    required this.backGroundColor,
+    this.borderColor,
   });
 
   @override
@@ -28,32 +35,33 @@ class _MenuButtonState extends State<Button> {
         height: widget.height,
         child: TextButton(
           style: ButtonStyle(
-            backgroundColor: const WidgetStatePropertyAll(AppTheme.secondColor),
+            backgroundColor: WidgetStatePropertyAll(widget.backGroundColor),
             shape: WidgetStatePropertyAll(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+                side: BorderSide(
+                  color: widget.borderColor ?? Colors.transparent,
+                  width: 1,
+                ),
+              ),
             ),
           ),
           onPressed: widget.onPressed,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Icon(
-                  Icons.scatter_plot,
-                  color: AppTheme.labelColor,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 5),
+                  child: widget.icon,
                 ),
-              ),
-              Text(
-                widget.label,
-                style: const TextStyle(
-                  color: AppTheme.labelColor,
-                  fontFamily: 'Roboto',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
+                Text(
+                  widget.label,
+                  style: widget.labelStyle,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

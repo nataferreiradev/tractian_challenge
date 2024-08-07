@@ -13,8 +13,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final CompanyController companyController = CompanyController();
+  final ScrollController scrollController = ScrollController();
 
-  late List<Company> listCompanies;
+  List<Company> listCompanies = [];
 
   bool isLoading = false;
 
@@ -24,10 +25,14 @@ class _HomePageState extends State<HomePage> {
     loadData();
   }
 
-  loadData() {
+  loadData() async {
     setState(() => isLoading = true);
-    listCompanies = companyController.getListCompanies();
+    await loadCompanies();
     setState(() => isLoading = false);
+  }
+
+  loadCompanies() {
+    listCompanies = companyController.getListCompanies();
   }
 
   @override
@@ -56,19 +61,24 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     }
-    return SingleChildScrollView(
+    if (listCompanies.isEmpty) {
+      return const Center(child: Text('Nenhuma compania foi encontrada'));
+    }
+    return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: listCompanies.length,
-            itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.only(top: 30),
-              child: HomePageButtons.companyButton(
-                context,
-                listCompanies[index],
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: listCompanies.length,
+              itemBuilder: (context, index) => Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: HomePageButtons.companyButton(
+                  context,
+                  listCompanies[index],
+                ),
               ),
             ),
           )
